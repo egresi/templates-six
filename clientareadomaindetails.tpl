@@ -7,6 +7,12 @@
 <div class="tab-content margin-bottom">
     <div class="tab-pane fade in active" id="tabOverview">
 
+        {if $alerts}
+            {foreach $alerts as $alert}
+                {include file="$template/includes/alert.tpl" type=$alert.type msg="<strong>{$alert.title}</strong><br>{$alert.description}" textcenter=true}
+            {/foreach}
+        {/if}
+
         {if $systemStatus != 'Active'}
             <div class="alert alert-warning text-center" role="alert">
                 {$LANG.domainCannotBeManagedUnlessActive}
@@ -64,37 +70,45 @@
 
         <br />
 
-        {if $systemStatus == 'Active'}
+        {if $canDomainBeManaged
+            and (
+                $managementoptions.nameservers or
+                $managementoptions.contacts or
+                $managementoptions.locking or
+                $renew)}
+                {* No reason to show this section if nothing can be done here! *}
 
             <h4>{$LANG.doToday}</h4>
 
             <ul>
-                {if $managementoptions.nameservers}
+                {if $systemStatus == 'Active' && $managementoptions.nameservers}
                     <li>
                         <a class="tabControlLink" data-toggle="tab" href="#tabNameservers">
                             {$LANG.changeDomainNS}
                         </a>
                     </li>
                 {/if}
-                {if $managementoptions.contacts}
+                {if $systemStatus == 'Active' && $managementoptions.contacts}
                     <li>
                         <a href="clientarea.php?action=domaincontacts&domainid={$domainid}">
                             {$LANG.updateWhoisContact}
                         </a>
                     </li>
                 {/if}
-                {if $managementoptions.locking}
+                {if $systemStatus == 'Active' && $managementoptions.locking}
                     <li>
                         <a class="tabControlLink" data-toggle="tab" href="#tabReglock">
                             {$LANG.changeRegLock}
                         </a>
                     </li>
                 {/if}
-                <li>
-                    <a href="cart.php?gid=renewals">
-                        {$LANG.renewYourDomain}
-                    </a>
-                </li>
+                {if $renew}
+                    <li>
+                        <a href="{routePath('domain-renewal', $domain)}">
+                            {$LANG.renewYourDomain}
+                        </a>
+                    </li>
+                {/if}
             </ul>
 
         {/if}
@@ -250,48 +264,63 @@
         {if $addons.idprotection}
             <div class="row margin-bottom">
                 <div class="col-xs-3 col-md-2 text-center">
-                    <i class="fa fa-shield fa-3x"></i>
+                    <i class="fas fa-shield-alt fa-3x"></i>
                 </div>
                 <div class="col-xs-9 col-md-10">
                     <strong>{$LANG.domainidprotection}</strong><br />
                     {$LANG.domainaddonsidprotectioninfo}<br />
-                    {if $addonstatus.idprotection}
-                        <a href="clientarea.php?action=domainaddons&id={$domainid}&disable=idprotect&token={$token}">{$LANG.disable}</a>
-                    {else}
-                        <a href="clientarea.php?action=domainaddons&id={$domainid}&buy=idprotect&token={$token}">{$LANG.domainaddonsbuynow} {$addonspricing.idprotection}</a>
-                    {/if}
+                    <form action="clientarea.php?action=domainaddons" method="post">
+                        <input type="hidden" name="id" value="{$domainid}"/>
+                        {if $addonstatus.idprotection}
+                            <input type="hidden" name="disable" value="idprotect"/>
+                            <input type="submit" value="{$LANG.disable}" class="btn btn-danger"/>
+                        {else}
+                            <input type="hidden" name="buy" value="idprotect"/>
+                            <input type="submit" value="{$LANG.domainaddonsbuynow} {$addonspricing.idprotection}" class="btn btn-success"/>
+                        {/if}
+                    </form>
                 </div>
             </div>
         {/if}
         {if $addons.dnsmanagement}
             <div class="row margin-bottom">
                 <div class="col-xs-3 col-md-2 text-center">
-                    <i class="fa fa-cloud fa-3x"></i>
+                    <i class="fas fa-cloud fa-3x"></i>
                 </div>
                 <div class="col-xs-9 col-md-10">
                     <strong>{$LANG.domainaddonsdnsmanagement}</strong><br />
                     {$LANG.domainaddonsdnsmanagementinfo}<br />
-                    {if $addonstatus.dnsmanagement}
-                        <a href="clientarea.php?action=domaindns&domainid={$domainid}">{$LANG.manage}</a> | <a href="clientarea.php?action=domainaddons&id={$domainid}&disable=dnsmanagement&token={$token}">{$LANG.disable}</a>
-                    {else}
-                        <a href="clientarea.php?action=domainaddons&id={$domainid}&buy=dnsmanagement&token={$token}">{$LANG.domainaddonsbuynow} {$addonspricing.dnsmanagement}</a>
-                    {/if}
+                    <form action="clientarea.php?action=domainaddons" method="post">
+                        <input type="hidden" name="id" value="{$domainid}"/>
+                        {if $addonstatus.dnsmanagement}
+                            <input type="hidden" name="disable" value="dnsmanagement"/>
+                            <a class="btn btn-success" href="clientarea.php?action=domaindns&domainid={$domainid}">{$LANG.manage}</a> <input type="submit" value="{$LANG.disable}" class="btn btn-danger"/>
+                        {else}
+                            <input type="hidden" name="buy" value="dnsmanagement"/>
+                            <input type="submit" value="{$LANG.domainaddonsbuynow} {$addonspricing.dnsmanagement}" class="btn btn-success"/>
+                        {/if}
+                    </form>
                 </div>
             </div>
         {/if}
         {if $addons.emailforwarding}
             <div class="row margin-bottom">
                 <div class="col-xs-3 col-md-2 text-center">
-                    <i class="fa fa-envelope fa-3x">&nbsp;</i><i class="fa fa-mail-forward fa-2x"></i>
+                    <i class="fas fa-envelope fa-3x">&nbsp;</i><i class="fas fa-share fa-2x"></i>
                 </div>
                 <div class="col-xs-9 col-md-10">
                     <strong>{$LANG.domainemailforwarding}</strong><br />
                     {$LANG.domainaddonsemailforwardinginfo}<br />
-                    {if $addonstatus.emailforwarding}
-                        <a href="clientarea.php?action=domainemailforwarding&domainid={$domainid}">{$LANG.manage}</a> | <a href="clientarea.php?action=domainaddons&id={$domainid}&disable=emailfwd&token={$token}">{$LANG.disable}</a>
-                    {else}
-                        <a href="clientarea.php?action=domainaddons&id={$domainid}&buy=emailfwd&token={$token}">{$LANG.domainaddonsbuynow} {$addonspricing.emailforwarding}</a>
-                    {/if}
+                    <form action="clientarea.php?action=domainaddons" method="post">
+                        <input type="hidden" name="id" value="{$domainid}"/>
+                        {if $addonstatus.emailforwarding}
+                            <input type="hidden" name="disable" value="emailfwd"/>
+                            <a class="btn btn-success" href="clientarea.php?action=domainemailforwarding&domainid={$domainid}">{$LANG.manage}</a> <input type="submit" value="{$LANG.disable}" class="btn btn-danger"/>
+                        {else}
+                            <input type="hidden" name="buy" value="emailfwd"/>
+                            <input type="submit" value="{$LANG.domainaddonsbuynow} {$addonspricing.emailforwarding}" class="btn btn-success"/>
+                        {/if}
+                    </form>
                 </div>
             </div>
         {/if}

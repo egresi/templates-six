@@ -16,7 +16,10 @@ $pdf->SetTextColor(255);
 $pdf->SetLineWidth(0.75);
 $pdf->StartTransform();
 $pdf->Rotate(-35, 100, 225);
-if ($status == 'Paid') {
+if ($status == 'Draft') {
+    $pdf->SetFillColor(200);
+    $pdf->SetDrawColor(140);
+} elseif ($status == 'Paid') {
     $pdf->SetFillColor(151, 223, 74);
     $pdf->SetDrawColor(110, 192, 70);
 } elseif ($status == 'Cancelled') {
@@ -32,7 +35,11 @@ if ($status == 'Paid') {
     $pdf->SetFillColor(223, 85, 74);
     $pdf->SetDrawColor(171, 49, 43);
 }
+if ($status == 'Payment Pending'){
+$pdf->Cell(100, 18, strtoupper(Lang::trans('invoices' . str_replace(' ', '', $status))), 'TB', 0, 'C', '1');
+} else {
 $pdf->Cell(100, 18, strtoupper(Lang::trans('invoices' . strtolower($status))), 'TB', 0, 'C', '1');
+}
 $pdf->StopTransform();
 $pdf->SetTextColor(0);
 
@@ -46,6 +53,14 @@ foreach ($companyaddress as $addressLine) {
 $pdf->Ln(5);
 
 # Header Bar
+
+/**
+ * Invoice header
+ *
+ * You can optionally define a header/footer in a way that is repeated across page breaks.
+ * For more information, see http://docs.whmcs.com/PDF_Invoice#Header.2FFooter
+ */
+
 $pdf->SetFont($pdfFont, 'B', 15);
 $pdf->SetFillColor(239);
 $pdf->Cell(0, 8, $pagetitle, 0, 1, 'L', '1');
@@ -180,3 +195,7 @@ if ($notes) {
 $pdf->SetFont($pdfFont, '', 8);
 $pdf->Ln(5);
 $pdf->Cell(180, 4, Lang::trans('invoicepdfgenerated') . ' ' . getTodaysDate(1), '', '', 'C');
+
+/**
+ * Invoice footer
+ */

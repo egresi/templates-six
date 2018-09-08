@@ -2,7 +2,7 @@
 <script type="text/javascript">
     jQuery(document).ready( function ()
     {
-        var table = $('#tableQuotesList').DataTable();
+        var table = jQuery('#tableQuotesList').removeClass('hidden').DataTable();
         {if $orderby == 'id'}
             table.order(0, '{$sort}');
         {elseif $orderby == 'date'}
@@ -13,10 +13,11 @@
             table.order(4, '{$sort}');
         {/if}
         table.draw();
+        jQuery('#tableLoading').addClass('hidden');
     });
 </script>
 <div class="table-container clearfix">
-    <table id="tableQuotesList" class="table table-list">
+    <table id="tableQuotesList" class="table table-list hidden">
         <thead>
             <tr>
                 <th>{$LANG.quotenumber}</th>
@@ -40,7 +41,7 @@
                         <form method="submit" action="dl.php">
                             <input type="hidden" name="type" value="q" />
                             <input type="hidden" name="id" value="{$quote.id}" />
-                            <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-download"></i> {$LANG.quotedownload}</button>
+                            <button type="submit" class="btn btn-default btn-sm"><i class="fas fa-download"></i> {$LANG.quotedownload}</button>
                         </form>
                     </td>
                     <td class="responsive-edit-button" style="display: none;">
@@ -52,4 +53,7 @@
             {/foreach}
         </tbody>
     </table>
+    <div class="text-center" id="tableLoading">
+        <p><i class="fas fa-spinner fa-spin"></i> {$LANG.loading}</p>
+    </div>
 </div>

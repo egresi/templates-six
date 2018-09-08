@@ -17,6 +17,12 @@ body {
 
 /* Container Responsive Behaviour */
 
+@media print {
+    html, body {
+        width: 750px;
+    }
+}
+
 .invoice-container {
     margin: 15px auto;
     padding: 70px;
@@ -40,6 +46,30 @@ body {
     }
 }
 
+@media (max-width: 499px) {
+    .invoice-header {
+        text-align: center;
+    }
+}
+
+.invoice-col {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 500px) {
+    .invoice-col {
+        float: left;
+        width: 50%;
+    }
+    .invoice-col.right {
+        float: right;
+        text-align: right;
+    }
+}
+
 /* Invoice Status Formatting */
 
 .invoice-container .invoice-status {
@@ -51,6 +81,9 @@ body {
 
 /* Invoice Status Colors */
 
+.draft {
+    color: #888;
+}
 .unpaid {
     color: #cc0000;
 }

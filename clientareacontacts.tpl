@@ -10,18 +10,22 @@
 
     <script type="text/javascript" src="{$BASE_PATH_JS}/StatesDropdown.js"></script>
 
-    <div class="alert alert-block alert-info text-center">
-        <form class="form-inline" role="form" method="post" action="{$smarty.server.PHP_SELF}?action=contacts">
-            <div class="form-group">
-                <label for="inputContactID">{$LANG.clientareachoosecontact}</label>
-                <select name="contactid" id="inputContactID" onchange="submit()" class="form-control">
-                    {foreach item=contact from=$contacts}
-                        <option value="{$contact.id}"{if $contact.id eq $contactid} selected="selected"{/if}>{$contact.name} - {$contact.email}</option>
-                    {/foreach}
-                    <option value="new">{$LANG.clientareanavaddcontact}</option>
-                </select>
+    <div class="alert alert-block alert-info">
+        <form class="form-horizontal" role="form" method="post" action="{$smarty.server.PHP_SELF}?action=contacts">
+            <div class="row">
+                <label for="inputContactId" class="col-sm-3 control-label">{$LANG.clientareachoosecontact}</label>
+                <div class="col-sm-6">
+                    <select name="contactid" id="inputContactId" onchange="submit()" class="form-control">
+                        {foreach item=contact from=$contacts}
+                            <option value="{$contact.id}"{if $contact.id eq $contactid} selected="selected"{/if}>{$contact.name} - {$contact.email}</option>
+                        {/foreach}
+                        <option value="new">{$LANG.clientareanavaddcontact}</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 hidden-xs">
+                    <button type="submit" class="btn btn-default btn-block">{$LANG.go}</button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-default">{$LANG.go}</button>
         </form>
     </div>
 
@@ -105,78 +109,23 @@
 
             <div class="form-group">
                 <label class="full control-label">{$LANG.subaccountpermissions}</label>
-                <div class="checkbox clearfix">
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" value="profile"{if in_array('profile',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsprofile}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permcontacts" value="contacts"{if in_array('contacts',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermscontacts}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permproducts" value="products"{if in_array('products',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsproducts}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permmanageproducts" value="manageproducts"{if in_array('manageproducts',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsmanageproducts}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permdomains" value="domains"{if in_array('domains',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsdomains}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permmanagedomains" value="managedomains"{if in_array('managedomains',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsmanagedomains}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="perminvoices" value="invoices"{if in_array('invoices',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsinvoices}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permquotes" value="quotes"{if in_array('quotes', $permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsquotes}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permtickets" value="tickets"{if in_array('tickets',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermstickets}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permaffiliates" value="affiliates"{if in_array('affiliates',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsaffiliates}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permemails" value="emails"{if in_array('emails',$permissions)} checked{/if} />
-                            <span>{$LANG.subaccountpermsemails}</span>
-                        </label>
-                    </div>
-                    <div class="col-sm-6">
-                        <label>
-                            <input type="checkbox" name="permissions[]" id="permorders" value="orders"{if in_array('orders',$permissions)} checked{/if} />
-                            {$LANG.subaccountpermsorders}
-                        </label>
+                <div class="checkbox clearfix" id="contactPermissions">
+                    {foreach $allPermissions as $permission}
+                        <div class="col-sm-6">
+                            <label>
+                                <input type="checkbox" name="permissions[]" value="{$permission}"{if in_array($permission, $permissions)} checked{/if} />
+                                <span>
+                                    {assign var='langPermission' value='subaccountperms'|cat:$permission}{$LANG.$langPermission}
+                                </span>
+                            </label>
+                        </div>
+                    {/foreach}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-sm btn-check-all" data-checkbox-container="contactPermissions" data-btn-check-toggle="1" id="btnSelectAll-contactPermissions" data-label-text-select="{lang key='checkAll'}" data-label-text-deselect="{lang key='uncheckAll'}">
+                            {lang key='checkAll'}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -185,7 +134,7 @@
                 <div id="newPassword1" class="form-group has-feedback">
                     <label for="inputNewPassword1" class="col-sm-5 control-label">{$LANG.newpassword}</label>
                     <div class="col-sm-6">
-                        <input type="password" class="form-control" id="inputNewPassword1" />
+                        <input type="password" class="form-control" id="inputNewPassword1" name="password" autocomplete="off" />
                         <span class="form-control-feedback glyphicon"></span>
                         {include file="$template/includes/pwstrength.tpl" noDisable=true}
                     </div>
@@ -193,18 +142,21 @@
                 <div id="newPassword2" class="form-group has-feedback">
                     <label for="inputNewPassword2" class="col-sm-5 control-label">{$LANG.confirmnewpassword}</label>
                     <div class="col-sm-6">
-                        <input type="password" class="form-control" id="inputNewPassword2" />
+                        <input type="password" class="form-control" id="inputNewPassword2" name="password2" autocomplete="off" />
                         <span class="form-control-feedback glyphicon"></span>
                         <div id="inputNewPassword2Msg">
                         </div>
                     </div>
                 </div>
             </fieldset>
-
+            {if $hasLinkedProvidersEnabled}
+                <h3>Linked Accounts</h3>
+                {include file="$template/includes/linkedaccounts.tpl" linkContext="linktable" }
+            {/if}
         </div>
 
         <div class="form-group">
-            <label class="control-label">{$LANG.clientareacontactsemails}</label>
+            <h3>{$LANG.clientareacontactsemails}</h3>
             <div class="controls checkbox">
                 <label>
                     <input type="checkbox" name="generalemails" id="generalemails" value="1"{if $generalemails} checked{/if} />
@@ -232,7 +184,7 @@
         <div class="form-group text-center">
             <input class="btn btn-primary" type="submit" name="save" value="{$LANG.clientareasavechanges}" />
             <input class="btn btn-default" type="reset" value="{$LANG.cancel}" />
-            <input class="btn btn-danger" type="button" value="{$LANG.clientareadeletecontact}" onclick="deleteContact('{$LANG.clientareadeletecontactareyousure}', {$contactid})" />
+            <a class="btn btn-danger" data-toggle="confirmation" data-btn-ok-label="{lang key='yes'}" data-btn-ok-icon="fa fa-check" data-btn-ok-class="btn-success" data-btn-cancel-label="{lang key='no'}" data-btn-cancel-icon="fa fa-ban" data-btn-cancel-class="btn-default" data-title="{lang key='clientareadeletecontact'}" data-content="{lang key='clientareadeletecontactareyousure'}" data-popout="true" href="clientarea.php?action=contacts&delete=true&id={$contactid}&token={$token}">{lang key='clientareadeletecontact'}</a>
         </div>
 
     </form>
@@ -241,3 +193,37 @@
     {include file="$template/clientareaaddcontact.tpl"}
 
 {/if}
+
+<script>
+    jQuery(document).ready( function ()
+    {
+        WHMCS.form.register();
+        jQuery('.removeAccountLink').click(function (e) {
+            e.preventDefault();
+            var authUserID = jQuery(this).data('authid');
+            swal(
+                {
+                    title: "Are you sure?",
+                    text: "This permanently unlinks the authorized account.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, unlink it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    WHMCS.http.jqClient.post('{routePath('auth-manage-client-delete')}' + authUserID,
+                        {
+                            'token': '" . generate_token("plain") . "'
+                        }).done(function(data) {
+                        if (data.status == 'success') {
+                            jQuery('#remoteAuth' + authUserID).remove();
+                            swal("Unlinked!", data.message, "success");
+                        } else {
+                            swal("Error!", data.message, "error");
+                        }
+                    });
+                });
+        });
+    });
+</script>

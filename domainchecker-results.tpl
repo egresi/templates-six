@@ -6,6 +6,10 @@
                 <p class="domain-checker-unavailable">
                     {$LANG.domainunavailable1} <strong>{$searchResults.domainName}</strong> {$LANG.domainunavailable2}
                 </p>
+            {elseif $searchResults.status == 'reserved'}
+                <p class="domain-checker-available">
+                    {$LANG.domainreserved1} <strong>{$searchResults.domainName}</strong> {$LANG.domainreserved2}
+                </p>
             {else}
                 <p class="domain-checker-available">
                     {$LANG.domainavailable1} <strong>{$searchResults.domainName}</strong> {$LANG.domainavailable2}
@@ -29,7 +33,11 @@
                         <tr>
                             <td><strong>{$searchResults.domainName}</strong></td>
                             <td class="text-center">
-                                <span class="label label-success">{$LANG.domaincheckeravailable}</span>
+                                {if $searchResults.status == 'reserved'}
+                                    <span class="label label-success">{$LANG.domainreserved}</span>
+                                {else}
+                                    <span class="label label-success">{$LANG.domaincheckeravailable}</span>
+                                {/if}
                             </td>
                             <td class="text-center">
                                 {$searchResults.shortestPeriod.register}
@@ -76,7 +84,11 @@
                             <td class="text-center">
                                 {if $searchingFor == 'register'}
                                     {if $result.isAvailable}
-                                        <span class="label label-success">{$LANG.domaincheckeravailable}</span>
+                                        {if $result.status == 'reserved'}
+                                            <span class="label label-success">{$LANG.domainreserved}</span>
+                                        {else}
+                                            <span class="label label-success">{$LANG.domaincheckeravailable}</span>
+                                        {/if}
                                     {elseif $result.isRegistered}
                                         <span class="label label-danger">{$LANG.domaincheckertaken}</span>
                                     {else}
@@ -169,13 +181,13 @@
                                 </td>
                                 <td class="text-right">
                                     {if count($result.pricing) == 1}
-                                        <button type="button" onclick="addToCart(this, false, 'register')" class="btn btn-default btn-sm">
+                                        <button type="button" onclick="addToCart(this, true, 'register')" class="btn btn-default btn-sm">
                                             <span class="glyphicon glyphicon-shopping-cart"></span>
                                             {$LANG.addtocart}
                                         </button>
                                     {else}
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm" onclick="addToCart(this, false, 'register')">
+                                            <button type="button" class="btn btn-default btn-sm" onclick="addToCart(this, true, 'register')">
                                                 <b class="glyphicon glyphicon-shopping-cart"></b>
                                                 {$LANG.addtocart}
                                             </button>
@@ -192,7 +204,7 @@
                                                         {continue}
                                                     {/if}
                                                     <li>
-                                                        <a onclick="addToCart(this, false, 'register', {$years});return false;">
+                                                        <a onclick="addToCart(this, true, 'register', {$years});return false;">
                                                             {$years} {$LANG.orderyears} @ {$price.register}
                                                         </a>
                                                     </li>

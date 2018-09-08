@@ -6,7 +6,7 @@
         <div class="alert alert-success text-center">
             <strong>
                 {$LANG.supportticketsticketcreated}
-                <a href="viewticket.php?tid={$tid}&amp;c={$c}" class="alert-link">#{$tid}</a>
+                <a id="ticket-number" href="viewticket.php?tid={$tid}&amp;c={$c}" class="alert-link">#{$tid}</a>
             </strong>
         </div>
 
@@ -21,7 +21,7 @@
         <p class="text-center">
             <a href="viewticket.php?tid={$tid}&amp;c={$c}" class="btn btn-default">
                 {$LANG.continue}
-                <i class="fa fa-arrow-circle-right"></i>
+                <i class="fas fa-arrow-circle-right"></i>
             </a>
         </p>
 

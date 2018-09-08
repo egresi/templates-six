@@ -1,13 +1,13 @@
 {if $modulecustombuttonresult}
     {if $modulecustombuttonresult == "success"}
-        {include file="$template/includes/alert.tpl" type="success" msg=$LANG.moduleactionsuccess textcenter=true}
+        {include file="$template/includes/alert.tpl" type="success" msg=$LANG.moduleactionsuccess textcenter=true idname="alertModuleCustomButtonSuccess"}
     {else}
-        {include file="$template/includes/alert.tpl" type="error" msg=$LANG.moduleactionfailed|cat:' ':$modulecustombuttonresult textcenter=true}
+        {include file="$template/includes/alert.tpl" type="error" msg=$LANG.moduleactionfailed|cat:' ':$modulecustombuttonresult textcenter=true idname="alertModuleCustomButtonFailed"}
     {/if}
 {/if}
 
 {if $pendingcancellation}
-    {include file="$template/includes/alert.tpl" type="error" msg=$LANG.cancellationrequestedexplanation textcenter=true}
+    {include file="$template/includes/alert.tpl" type="error" msg=$LANG.cancellationrequestedexplanation textcenter=true idname="alertPendingCancellation"}
 {/if}
 
 <div class="tab-content margin-bottom">
@@ -25,8 +25,8 @@
                         <div class="product-status product-status-{$rawstatus|strtolower}">
                             <div class="product-icon text-center">
                                 <span class="fa-stack fa-lg">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-{if $type eq "hostingaccount" || $type == "reselleraccount"}hdd-o{elseif $type eq "server"}database{else}archive{/if} fa-stack-1x fa-inverse"></i>
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fas fa-{if $type eq "hostingaccount" || $type == "reselleraccount"}hdd{elseif $type eq "server"}database{else}archive{/if} fa-stack-1x fa-inverse"></i>
                                 </span>
                                 <h3>{$product}</h3>
                                 <h4>{$groupname}</h4>
@@ -39,15 +39,15 @@
                         {if $showcancelbutton || $packagesupgrade}
                             <div class="row">
                                 {if $packagesupgrade}
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-{if $showcancelbutton}6{else}12{/if}">
                                         <a href="upgrade.php?type=package&amp;id={$id}" class="btn btn-block btn-success">{$LANG.upgrade}</a>
                                     </div>
-                                    <div class="col-xs-6">
-                                {else}
-                                    <div class="col-xs-12">
                                 {/if}
-                                    <a href="clientarea.php?action=cancel&amp;id={$id}" class="btn btn-block btn-danger {if $pendingcancellation}disabled{/if}">{if $pendingcancellation}{$LANG.cancellationrequested}{else}{$LANG.cancel}{/if}</a>
-                                </div>
+                                {if $showcancelbutton}
+                                    <div class="col-xs-{if $packagesupgrade}6{else}12{/if}">
+                                        <a href="clientarea.php?action=cancel&amp;id={$id}" class="btn btn-block btn-danger {if $pendingcancellation}disabled{/if}">{if $pendingcancellation}{$LANG.cancellationrequested}{else}{$LANG.clientareacancelrequestbutton}{/if}</a>
+                                    </div>
+                                {/if}
                             </div>
                         {/if}
 
@@ -98,26 +98,26 @@
                         <ul class="nav nav-tabs nav-tabs-overflow">
                             {if $domain}
                                 <li class="active">
-                                    <a href="#domain" data-toggle="tab"><i class="fa fa-globe fa-fw"></i> {if $type eq "server"}{$LANG.sslserverinfo}{elseif ($type eq "hostingaccount" || $type eq "reselleraccount") && $serverdata}{$LANG.hostingInfo}{else}{$LANG.clientareahostingdomain}{/if}</a>
+                                    <a href="#domain" data-toggle="tab"><i class="fas fa-globe fa-fw"></i> {if $type eq "server"}{$LANG.sslserverinfo}{elseif ($type eq "hostingaccount" || $type eq "reselleraccount") && $serverdata}{$LANG.hostingInfo}{else}{$LANG.clientareahostingdomain}{/if}</a>
                                 </li>
                             {elseif $moduleclientarea}
                                 <li class="active">
-                                    <a href="#manage" data-toggle="tab"><i class="fa fa-globe fa-fw"></i> {$LANG.manage}</a>
+                                    <a href="#manage" data-toggle="tab"><i class="fas fa-globe fa-fw"></i> {$LANG.manage}</a>
                                 </li>
                             {/if}
                             {if $configurableoptions}
                                 <li{if !$domain && !$moduleclientarea} class="active"{/if}>
-                                    <a href="#configoptions" data-toggle="tab"><i class="fa fa-cubes fa-fw"></i> {$LANG.orderconfigpackage}</a>
+                                    <a href="#configoptions" data-toggle="tab"><i class="fas fa-cubes fa-fw"></i> {$LANG.orderconfigpackage}</a>
                                 </li>
                             {/if}
                             {if $customfields}
                                 <li{if !$domain && !$moduleclientarea && !$configurableoptions} class="active"{/if}>
-                                    <a href="#additionalinfo" data-toggle="tab"><i class="fa fa-info fa-fw"></i> {$LANG.additionalInfo}</a>
+                                    <a href="#additionalinfo" data-toggle="tab"><i class="fas fa-info fa-fw"></i> {$LANG.additionalInfo}</a>
                                 </li>
                             {/if}
                             {if $lastupdate}
                                 <li{if !$domain && !$moduleclientarea && !$configurableoptions && !$customfields} class="active"{/if}>
-                                    <a href="#resourceusage" data-toggle="tab"><i class="fa fa-inbox fa-fw"></i> {$LANG.resourceUsage}</a>
+                                    <a href="#resourceusage" data-toggle="tab"><i class="fas fa-inbox fa-fw"></i> {$LANG.resourceUsage}</a>
                                 </li>
                             {/if}
                         </ul>
@@ -321,7 +321,7 @@
                         {$download.description}
                     </p>
                     <p>
-                        <a href="{$download.link}" class="btn btn-default"><i class="fa fa-download"></i> {$LANG.downloadname}</a>
+                        <a href="{$download.link}" class="btn btn-default"><i class="fas fa-download"></i> {$LANG.downloadname}</a>
                     </p>
                 </div>
             {/foreach}
@@ -339,19 +339,28 @@
         <div class="row">
             {foreach from=$addons item=addon}
                 <div class="col-xs-10 col-xs-offset-1">
-                    <h4>{$addon.name}</h4>
-                    <p>
-                        {$addon.pricing}
-                    </p>
-                    <p>
-                        {$LANG.registered}: {$addon.regdate}
-                    </p>
-                    <p>
-                        {$LANG.clientareahostingnextduedate}: {$addon.nextduedate}
-                    </p>
-                    <p>
-                        <span class="label status-{$addon.status|strtolower}">{$addon.status}</span>
-                    </p>
+                    <div class="panel panel-default panel-accent-blue">
+                        <div class="panel-heading">
+                            {$addon.name}
+                            <div class="pull-right status-{$addon.rawstatus|strtolower}">{$addon.status}</div>
+                        </div>
+                        <div class="row panel-body">
+                            <div class="col-md-6">
+                                <p>
+                                    {$addon.pricing}
+                                </p>
+                                <p>
+                                    {$LANG.registered}: {$addon.regdate}
+                                </p>
+                                <p>
+                                    {$LANG.clientareahostingnextduedate}: {$addon.nextduedate}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            {$addon.managementActions}
+                        </div>
+                    </div>
                 </div>
             {/foreach}
         </div>
@@ -376,7 +385,7 @@
             <div id="newPassword1" class="form-group has-feedback">
                 <label for="inputNewPassword1" class="col-sm-5 control-label">{$LANG.newpassword}</label>
                 <div class="col-sm-6">
-                    <input type="password" class="form-control" id="inputNewPassword1" name="newpw" />
+                    <input type="password" class="form-control" id="inputNewPassword1" name="newpw" autocomplete="off" />
                     <span class="form-control-feedback glyphicon"></span>
                     {include file="$template/includes/pwstrength.tpl"}
                 </div>
@@ -384,7 +393,7 @@
             <div id="newPassword2" class="form-group has-feedback">
                 <label for="inputNewPassword2" class="col-sm-5 control-label">{$LANG.confirmnewpassword}</label>
                 <div class="col-sm-6">
-                    <input type="password" class="form-control" id="inputNewPassword2" name="confirmpw" />
+                    <input type="password" class="form-control" id="inputNewPassword2" name="confirmpw" autocomplete="off" />
                     <span class="form-control-feedback glyphicon"></span>
                     <div id="inputNewPassword2Msg">
                     </div>
